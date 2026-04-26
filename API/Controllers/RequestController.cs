@@ -1,10 +1,13 @@
 ﻿using Appliction.Services.RequestServices;
 using Appliction.Services.RequestServices.DTOs;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class RequestController : ControllerBase
@@ -15,13 +18,51 @@ namespace API.Controllers
         {
             _requestService = requestService;
         }
-        [HttpGet("GetAllRequests")]
+        [Authorize(Roles = nameof(SystemRole.Employee))]
+        [HttpPost("Create_Request")]
+        public async Task<IActionResult> CreateRequest([FromBody] CreateRequestDto input)
+        {
+            await _requestService.CreateRequest(input);
+            return Ok();
+        }
+        [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Admin))]
+        [HttpPut("Update_Request")]
+        public async Task<IActionResult> UpdateRequest(Guid id, [FromBody] CreateRequestDto input)
+        {
+            await _requestService.UpdateRequest(id, input);
+            return Ok();
+        }
+        [Authorize(Roles = nameof(SystemRole.Technician) + "," + nameof(SystemRole.Admin))]
+        [HttpPut("Update_Status")]
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateStatusDto input)
+        {
+            await _requestService.UpdateStatus(id, input);
+            return Ok();
+        }
+        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [HttpPut("Assign_Technician")]
+        public async Task<IActionResult> AssignTechnician(Guid requestId, Guid technicianId)
+        {
+
+            await _requestService.AssignTechnician(requestId, technicianId);
+            return Ok();
+        }
+        [Authorize(Roles = nameof(SystemRole.Technician))]
+        [HttpPut("Add_Technician_Notes")]
+        public async Task<IActionResult> AddTechnicianNotes(Guid requestId, string notes)
+        {
+            await _requestService.AddTechnicianNotes(requestId, notes);
+            return Ok();
+        }
+        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [HttpGet("Get_All_Requests")]
         public async Task<IActionResult> GetAllRequests()
         {
             var requests = await _requestService.GetAllRequest();
             return Ok(requests);
         }
-        [HttpGet("GetRequestById")]
+        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [HttpGet("Get_Request_By_Id")]
         public async Task<IActionResult> GetRequestById(Guid id)
         {
             var request = await _requestService.GetRequestById(id);
@@ -31,13 +72,15 @@ namespace API.Controllers
             }
             return Ok(request);
         }
-        [HttpGet("GetAllRequestHistory")]
+        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [HttpGet("Get_All_Request_History")]
         public async Task<IActionResult> GetAllRequestHistory()
         {
             var requestHistory = await _requestService.GetAllRequestHistory();
             return Ok(requestHistory);
         }
-        [HttpGet("GetRequestHistoryById")]
+        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [HttpGet("Get_Request_History_By_Id")]
         public async Task<IActionResult> GetRequestHistoryById(Guid requestId)
         {
             var requestHistory = await _requestService.GetRequestHistoryById(requestId);
@@ -47,25 +90,8 @@ namespace API.Controllers
             }
             return Ok(requestHistory);
         }
-        [HttpPost("CreateRequest")]
-        public async Task<IActionResult> CreateRequest([FromBody] CreateRequestDto input)
-        {
-            await _requestService.CreateRequest(input);
-            return Ok();
-        }
-        [HttpPut("UpdateRequest")]
-        public async Task<IActionResult> UpdateRequest(Guid id, [FromBody] CreateRequestDto input)
-        {
-            await _requestService.UpdateRequest(id, input);
-            return Ok();
-        }
-        [HttpDelete("DeleteRequest")]
-        public async Task<IActionResult> DeleteRequest(Guid id)
-        {
-            await _requestService.DeleteRequest(id);
-            return Ok();
-        }
-        [HttpGet("GetRequestsCurrantTechnicianOrEmployee")]
+        [Authorize(Roles = nameof(SystemRole.Technician) + "," + nameof(SystemRole.Employee))]
+        [HttpGet("Get_Requests_Currant_Technician_Or_Employee")]
         public async Task<IActionResult> GetRequestsCurrantTechnicianOrEmployee()
         {
             var requests = await _requestService.GetRequestsCurrantTechnicianOrEmployee();
@@ -75,23 +101,11 @@ namespace API.Controllers
             }
             return Ok(requests);
         }
-        [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateStatusDto input)
+        [Authorize(Roles = nameof(SystemRole.Admin) + "," + nameof(SystemRole.Employee))]
+        [HttpDelete("Delete_Request")]
+        public async Task<IActionResult> DeleteRequest(Guid id)
         {
-            await _requestService.UpdateStatus(id, input);
-            return Ok();
-        }
-        [HttpPut("AssignTechnician")]
-        public async Task<IActionResult> AssignTechnician(Guid requestId, Guid technicianId)
-        {
-
-            await _requestService.AssignTechnician(requestId, technicianId);
-            return Ok();
-        }
-        [HttpPut("AddTechnicianNotes")]
-        public async Task<IActionResult> AddTechnicianNotes(Guid requestId, string notes)
-        {
-            await _requestService.AddTechnicianNotes(requestId, notes);
+            await _requestService.DeleteRequest(id);
             return Ok();
         }
     }

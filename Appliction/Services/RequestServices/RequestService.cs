@@ -158,7 +158,6 @@ namespace Appliction.Services.RequestServices
             _requestRepository.SaveChanges();
             _requestDetailRepository.SaveChanges();
         }
-        //////// Prroblem in this method
         public async Task UpdateStatus(Guid id, UpdateStatusDto input)
         {
             var rh = _requestHistoryRepository.GetAll().FirstOrDefault(rh => rh.RequestId == id);
@@ -173,7 +172,8 @@ namespace Appliction.Services.RequestServices
                 throw new Exception("Status is already the same");
             }
 
-            rh.OldStatus = rh.NewStatus ?? rh.OldStatus;
+
+            rh.OldStatus = rh.NewStatus ?? RequestStatus.New;
             rh.NewStatus = input.NewStatus;
             rh.ChangedAt = DateTime.UtcNow;
             rh.Comment = input.Comment;

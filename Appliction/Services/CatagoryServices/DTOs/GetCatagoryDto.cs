@@ -11,5 +11,6 @@ namespace Appliction.Services.CatagoryServices.DTOs
         public string Name { get; set; }
         public string? Description { get; set; }
         public TypeCatagory Type { get; set; }
+        public string TypeName { get { return Type.ToString(); } }
     }
 }

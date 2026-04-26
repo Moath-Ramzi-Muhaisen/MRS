@@ -10,5 +10,6 @@ namespace Appliction.Services.RoleService.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; }
         public SystemRole Code { get; set; }
+        public string CodeName { get { return Code.ToString(); } }
     }
 }

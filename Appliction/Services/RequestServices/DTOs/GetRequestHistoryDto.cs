@@ -17,7 +17,9 @@ namespace Appliction.Services.RequestServices.DTOs
         public string EmployeeName { get; set; }
 
         public RequestStatus OldStatus { get; set; }
+        public string OldStatusName { get { return OldStatus.ToString(); } }
         public RequestStatus? NewStatus { get; set; }
+        public string? NewStatusName { get { return NewStatus?.ToString(); } }
 
         public DateTime ChangedAt { get; set; }
         public string? Comment { get; set; }

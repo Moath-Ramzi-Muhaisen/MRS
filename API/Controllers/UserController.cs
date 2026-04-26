@@ -1,10 +1,13 @@
 ﻿using Appliction.Services.UserService;
 using Appliction.Services.UserService.DTOs;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = nameof(SystemRole.Admin))]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -14,29 +17,8 @@ namespace API.Controllers
         {
             _userService = userService;
         }
-        [HttpGet("GetAllUsers")]
-        public IActionResult GetAllUsers()
-        {
-            var users = _userService.GetAllUser();
-            return Ok(users);
-        }
-        [HttpGet("GetUserById")]
-        public async Task<IActionResult> GetUserById(Guid id)
-        {
-            var user = await _userService.GetUserById(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return Ok(user);
-        }
-        [HttpGet("GetUsersTechnicians")]
-        public async Task<IActionResult> GetUsersTechnicians()
-        {
-            var technicians = await _userService.GetUsersTechnicians();
-            return Ok(technicians);
-        }
-        [HttpPost("CreateUser")]
+        [AllowAnonymous]
+        [HttpPost("Create_User")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto input)
         {
             try
@@ -49,7 +31,8 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("UpdateUser")]
+        [Authorize]
+        [HttpPut("Update_User")]
         public IActionResult UpdateUser(Guid id, [FromBody] UpdateUserDto input)
         {
             try
@@ -62,7 +45,30 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("DeleteUser")]
+        [HttpGet("Get_All_Users")]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userService.GetAllUser();
+            return Ok(users);
+        }
+        [HttpGet("Get_User_By_Id")]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            var user = await _userService.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+        [HttpGet("Get_Users_Technicians")]
+        public async Task<IActionResult> GetUsersTechnicians()
+        {
+            var technicians = await _userService.GetUsersTechnicians();
+            return Ok(technicians);
+        }
+
+        [HttpDelete("Delete_User")]
         public IActionResult DeleteUser(Guid id)
         {
             try

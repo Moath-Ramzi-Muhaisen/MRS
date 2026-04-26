@@ -1,9 +1,12 @@
 ﻿using Appliction.Services.RoleService;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = nameof(SystemRole.Admin))]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
@@ -14,7 +17,7 @@ namespace API.Controllers
         {
             _roleService = roleService;
         }
-        [HttpGet("GetAllRoles")]
+        [HttpGet("Get_All_Roles")]
         public IActionResult GetAllRoles()
         {
             var roles = _roleService.GetAllRoles();

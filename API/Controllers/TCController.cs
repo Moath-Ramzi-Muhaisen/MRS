@@ -1,10 +1,13 @@
 ﻿using Appliction.Services.TCServices;
 using Appliction.Services.TCServices.DTOs;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = nameof(SystemRole.Admin))]
     [Route("api/[controller]")]
     [ApiController]
     public class TCController : ControllerBase
@@ -15,13 +18,25 @@ namespace API.Controllers
         {
             _tcService = tcService;
         }
-        [HttpGet("GetAllTC")]
+        [HttpPost("Create_Technician_Category")]
+        public async Task<IActionResult> CreateTC([FromBody] CreateTCDto input)
+        {
+            await _tcService.CreateTC(input);
+            return Ok();
+        }
+        [HttpPut("Update_Technician_Category")]
+        public IActionResult UpdateTC(Guid id, [FromBody] UpdateTCDto input)
+        {
+            _tcService.UpdateTC(id, input);
+            return Ok();
+        }
+        [HttpGet("Get_All_Technician_Categories")]
         public async Task<IActionResult> GetAllTC()
         {
             var tcList = await _tcService.GetAllTC();
             return Ok(tcList);
         }
-        [HttpGet("GetTCById")]
+        [HttpGet("Get_Technician_Category_By_Id")]
         public async Task<IActionResult> GetTCById(Guid id)
         {
             var tc = await _tcService.GetTCById(id);
@@ -31,19 +46,8 @@ namespace API.Controllers
             }
             return Ok(tc);
         }
-        [HttpPost("CreateTC")]
-        public async Task<IActionResult> CreateTC([FromBody] CreateTCDto input)
-        {
-            await _tcService.CreateTC(input);
-            return Ok();
-        }
-        [HttpPut("UpdateTC")]
-        public IActionResult UpdateTC(Guid id, [FromBody] UpdateTCDto input)
-        {
-            _tcService.UpdateTC(id, input);
-            return Ok();
-        }
-        [HttpDelete("DeleteTC")]
+
+        [HttpDelete("Delete_Technician_Category")]
         public IActionResult DeleteTC(Guid id)
         {
             _tcService.DeleteTC(id);

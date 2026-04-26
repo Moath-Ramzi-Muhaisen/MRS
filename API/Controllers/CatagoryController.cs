@@ -1,9 +1,12 @@
 ﻿using Appliction.Services.CatagoryServices;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = nameof(SystemRole.Admin))]
     [Route("api/[controller]")]
     [ApiController]
     public class CatagoryController : ControllerBase
@@ -13,7 +16,7 @@ namespace API.Controllers
         {
             _catagoryService = catagoryService;
         }
-        [HttpGet("GetAllCatagory")]
+        [HttpGet("Get_All_Catagory")]
         public async Task<IActionResult> GetAllCatagory()
         {
             var catagories = await _catagoryService.GetAllCatagory();
