@@ -1,4 +1,5 @@
 ﻿using Application.Services.CurrentUserServices;
+using Appliction.Helper;
 using Appliction.Repositories;
 using Appliction.Services.RequestServices.DTOs;
 using Domain.Entites;
@@ -91,7 +92,7 @@ namespace Appliction.Services.RequestServices
                     TechnicianName = r.Technician.Name,
                     CategoryId = r.CategoryId,
                     CategoryName = r.Category.Name,
-                    CreatedAt = r.CreatedAt,
+                    CreatedAt = DateHelper.Format(r.CreatedAt),
                     Status = r.Status,
                     RequestDetail = new GetRequestDetailDto
                     {
@@ -123,7 +124,7 @@ namespace Appliction.Services.RequestServices
                 TechnicianName = request.Technician.Name,
                 CategoryId = request.CategoryId,
                 CategoryName = request.Category.Name,
-                CreatedAt = request.CreatedAt,
+                CreatedAt = DateHelper.Format(request.CreatedAt),
                 Status = request.Status,
                 RequestDetail = new GetRequestDetailDto
                 {
@@ -228,7 +229,7 @@ namespace Appliction.Services.RequestServices
                 TechnicianName = r.Technician.Name,
                 CategoryId = r.CategoryId,
                 CategoryName = r.Category.Name,
-                CreatedAt = r.CreatedAt,
+                CreatedAt = DateHelper.Format(r.CreatedAt),
                 Status = r.Status,
                 RequestDetail = new GetRequestDetailDto
                 {
@@ -251,7 +252,7 @@ namespace Appliction.Services.RequestServices
                 EmployeeName = rh.Employee.Name,
                 OldStatus = rh.OldStatus,
                 NewStatus = rh.NewStatus,
-                ChangedAt = rh.ChangedAt,
+                ChangedAt = DateHelper.Format(rh.ChangedAt),
                 Comment = rh.Comment
             }).ToList();
             return requestHistoryList;
@@ -271,7 +272,7 @@ namespace Appliction.Services.RequestServices
                 EmployeeName = rh.Employee.Name,
                 OldStatus = rh.OldStatus,
                 NewStatus = rh.NewStatus,
-                ChangedAt = rh.ChangedAt,
+                ChangedAt = DateHelper.Format(rh.ChangedAt),
                 Comment = rh.Comment
             };
             return rhDto;

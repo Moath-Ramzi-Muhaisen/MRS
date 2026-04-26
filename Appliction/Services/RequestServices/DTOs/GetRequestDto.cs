@@ -19,7 +19,7 @@ namespace Appliction.Services.RequestServices.DTOs
 
         public string CategoryName { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public string CreatedAt { get; set; }
 
         public RequestStatus Status { get; set; }
         public string StatusName { get { return Status.ToString(); } }
