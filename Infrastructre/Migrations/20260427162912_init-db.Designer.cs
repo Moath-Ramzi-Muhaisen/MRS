@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructre.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260423154050_init-db")]
+    [Migration("20260427162912_init-db")]
     partial class initdb
     {
         /// <inheritdoc />
@@ -27,9 +27,11 @@ namespace Infrastructre.Migrations
 
             modelBuilder.Entity("Domain.Entites.Category", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -44,6 +46,50 @@ namespace Infrastructre.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Issues related to electrical systems such as power outages, faulty wiring, lighting problems, or circuit breaker failures.",
+                            Name = "Electrical",
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Problems involving heating, cooling, or ventilation systems, including air conditioner failures, poor airflow, or temperature control issues.",
+                            Name = "HVAC",
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Issues related to water systems such as leaks, clogged drains, broken pipes, or malfunctioning faucets and fixtures.",
+                            Name = "Plumbing",
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Problems related to network connectivity, including internet outages, slow network performance, or issues with network hardware.",
+                            Name = "Network",
+                            Type = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Issues related to IT systems, software, or hardware, including computer malfunctions, software errors, or cybersecurity concerns.",
+                            Name = "InformationTechnology",
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Miscellaneous issues that do not fall into the other predefined categories.",
+                            Name = "Other",
+                            Type = 6
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entites.Request", b =>
@@ -52,8 +98,8 @@ namespace Infrastructre.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -107,12 +153,12 @@ namespace Infrastructre.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TechnicianNotes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RequestId");
+                    b.HasIndex("RequestId")
+                        .IsUnique();
 
                     b.ToTable("RequestDetails");
                 });
@@ -123,13 +169,16 @@ namespace Infrastructre.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("NewStatus")
+                    b.Property<int?>("NewStatus")
                         .HasColumnType("int");
 
                     b.Property<int>("OldStatus")
@@ -138,14 +187,11 @@ namespace Infrastructre.Migrations
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RequestId");
+                    b.HasIndex("EmployeeId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RequestId");
 
                     b.ToTable("RequestHistories");
                 });
@@ -174,10 +220,10 @@ namespace Infrastructre.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid?>("TechnicianId")
+                    b.Property<Guid>("TechnicianId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -276,8 +322,8 @@ namespace Infrastructre.Migrations
             modelBuilder.Entity("Domain.Entites.RequestDetail", b =>
                 {
                     b.HasOne("Domain.Entites.Request", "Request")
-                        .WithMany()
-                        .HasForeignKey("RequestId")
+                        .WithOne("RequestDetail")
+                        .HasForeignKey("Domain.Entites.RequestDetail", "RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -286,21 +332,21 @@ namespace Infrastructre.Migrations
 
             modelBuilder.Entity("Domain.Entites.RequestHistory", b =>
                 {
+                    b.HasOne("Domain.Entites.User", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entites.Request", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entites.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Employee");
 
                     b.Navigation("Request");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entites.TechnicianCategory", b =>
@@ -314,7 +360,8 @@ namespace Infrastructre.Migrations
                     b.HasOne("Domain.Entites.User", "Technician")
                         .WithMany()
                         .HasForeignKey("TechnicianId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
@@ -341,6 +388,12 @@ namespace Infrastructre.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Domain.Entites.Request", b =>
+                {
+                    b.Navigation("RequestDetail")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Infrastructre.Migrations
 {
     /// <inheritdoc />
@@ -15,7 +17,8 @@ namespace Infrastructre.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false)
@@ -70,7 +73,7 @@ namespace Infrastructre.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -102,8 +105,8 @@ namespace Infrastructre.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,7 +152,7 @@ namespace Infrastructre.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmployeeNotes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TechnicianNotes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TechnicianNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -170,10 +173,10 @@ namespace Infrastructre.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OldStatus = table.Column<int>(type: "int", nullable: false),
-                    NewStatus = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NewStatus = table.Column<int>(type: "int", nullable: true),
+                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -186,27 +189,41 @@ namespace Infrastructre.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RequestHistories_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_RequestHistories_Users_EmployeeId",
+                        column: x => x.EmployeeId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Description", "Name", "Type" },
+                values: new object[,]
+                {
+                    { 1, "Issues related to electrical systems such as power outages, faulty wiring, lighting problems, or circuit breaker failures.", "Electrical", 1 },
+                    { 2, "Problems involving heating, cooling, or ventilation systems, including air conditioner failures, poor airflow, or temperature control issues.", "HVAC", 2 },
+                    { 3, "Issues related to water systems such as leaks, clogged drains, broken pipes, or malfunctioning faucets and fixtures.", "Plumbing", 3 },
+                    { 4, "Problems related to network connectivity, including internet outages, slow network performance, or issues with network hardware.", "Network", 4 },
+                    { 5, "Issues related to IT systems, software, or hardware, including computer malfunctions, software errors, or cybersecurity concerns.", "InformationTechnology", 5 },
+                    { 6, "Miscellaneous issues that do not fall into the other predefined categories.", "Other", 6 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_RequestDetails_RequestId",
                 table: "RequestDetails",
-                column: "RequestId");
+                column: "RequestId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RequestHistories_EmployeeId",
+                table: "RequestHistories",
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestHistories_RequestId",
                 table: "RequestHistories",
                 column: "RequestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RequestHistories_UserId",
-                table: "RequestHistories",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Requests_CategoryId",

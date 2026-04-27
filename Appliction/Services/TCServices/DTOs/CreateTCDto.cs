@@ -8,8 +8,8 @@ namespace Appliction.Services.TCServices.DTOs
 {
     public class CreateTCDto
     {
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public Guid TechnicianId { get; set; }
-        
+
     }
 }

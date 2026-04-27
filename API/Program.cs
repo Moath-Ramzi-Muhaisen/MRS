@@ -93,7 +93,6 @@ var app = builder.Build();
 
 
 UserSeedData.UserSeed(app.Services);
-CatagorySeedData.UserSeed(app.Services);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

@@ -8,7 +8,7 @@ namespace Appliction.Services.RequestServices.DTOs
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
 
         public CreateRequestDetailDto RequestDetail { get; set; }

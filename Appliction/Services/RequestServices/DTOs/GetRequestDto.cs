@@ -15,7 +15,7 @@ namespace Appliction.Services.RequestServices.DTOs
         public Guid? TechnicianId { get; set; }
 
         public string? TechnicianName { get; set; }
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
         public string CategoryName { get; set; }
 

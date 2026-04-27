@@ -17,7 +17,7 @@ namespace Domain.Entites
         public Guid? TechnicianId { get; set; }
         [ForeignKey("TechnicianId")]
         public User Technician { get; set; }
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
