@@ -9,10 +9,10 @@ namespace Appliction.Services.UserService
     {
         List<GetUsersDto> GetAllUser();
         Task<GetUsersDto> GetUserById(Guid id);
-         Task CreateUser(CreateUserDto input);
-         void UpdateUser(Guid id, UpdateUserDto input);
-         void DeleteUser(Guid id);
-         Task<List<GetUsersDto>> GetUsersTechnicians();
+        Task CreateUser(CreateUserDto input);
+        Task UpdateUser(Guid id, UpdateUserDto input);
+        Task DeleteUser(Guid id);
+        Task<List<GetUsersDto>> GetUsersTechnicians();
 
     }
 }

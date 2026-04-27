@@ -17,16 +17,16 @@ namespace Appliction.Services.RoleService
             _roleRepository = roleRepository;
         }
 
-        public  List<GetRoleDto> GetAllRoles()
+        public async Task<List<GetRoleDto>> GetAllRoles()
         {
-           var roles = _roleRepository.GetAll().Select(role => new GetRoleDto
-           {
-               Id = role.Id,
-               Name = role.Name,
-               Code = role.Code
-           }).ToList(); 
+            var roles = _roleRepository.GetAll().Select(role => new GetRoleDto
+            {
+                Id = role.Id,
+                Name = role.Name,
+                Code = role.Code
+            }).ToList();
 
             return roles;
-        }   
+        }
     }
 }

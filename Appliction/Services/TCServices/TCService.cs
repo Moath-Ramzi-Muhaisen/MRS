@@ -23,29 +23,34 @@ namespace Appliction.Services.TCServices
                 CategoryId = input.CategoryId,
                 TechnicianId = input.TechnicianId
             };
-            
+
             await _tcrepository.InsertAsync(tc);
             await _tcrepository.SaveChangesAsync();
         }
 
-        public void DeleteTC(Guid id)
+        public async Task DeleteTC(Guid id)
         {
-           _tcrepository.Delete(_tcrepository.GetById(id));
+            var tc = _tcrepository.GetById(id);
+            if (tc == null)
+            {
+                throw new Exception("Technician Category not found.");
+            }
+            _tcrepository.Delete(tc);
             _tcrepository.SaveChanges();
         }
 
         public async Task<List<GetTCDto>> GetAllTC()
         {
-           var tcList = await _tcrepository.GetAll().Include(tc => tc.Technician).Include(tc => tc.Category)
-                .Select(tc => new GetTCDto
-            {
-                Id = tc.Id,
-                CategoryId = tc.CategoryId,
-                CategoryName = tc.Category.Name,
-                TechnicianId = tc.TechnicianId,
-                TechnicianName = tc.Technician.Name
+            var tcList = await _tcrepository.GetAll().Include(tc => tc.Technician).Include(tc => tc.Category)
+                 .Select(tc => new GetTCDto
+                 {
+                     Id = tc.Id,
+                     CategoryId = tc.CategoryId,
+                     CategoryName = tc.Category.Name,
+                     TechnicianId = tc.TechnicianId,
+                     TechnicianName = tc.Technician.Name
 
-                }).ToListAsync();
+                 }).ToListAsync();
             return tcList;
         }
 
@@ -64,9 +69,9 @@ namespace Appliction.Services.TCServices
             return tc;
         }
 
-        public void UpdateTC(Guid id, UpdateTCDto input)
+        public async Task UpdateTC(Guid id, UpdateTCDto input)
         {
-           var tc = _tcrepository.GetById(id);
+            var tc = _tcrepository.GetById(id);
 
 
             tc.CategoryId = input.CategoryId;

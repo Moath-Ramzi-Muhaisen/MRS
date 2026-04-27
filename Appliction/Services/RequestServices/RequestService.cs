@@ -26,12 +26,12 @@ namespace Appliction.Services.RequestServices
 
         public async Task CreateRequest(CreateRequestDto input)
         {
-            var employeeId = _currentUserService.UserId;
+            var employeeId = _currentUserService.UserId.Value;
             var request = new Request
             {
                 Title = input.Title,
                 Description = input.Description,
-                EmployeeId = employeeId.Value,
+                EmployeeId = employeeId,
                 CategoryId = input.CategoryId,
                 CreatedAt = DateTime.UtcNow,
                 Status = RequestStatus.New
@@ -52,7 +52,7 @@ namespace Appliction.Services.RequestServices
             var requestHistory = new RequestHistory
             {
                 RequestId = request.Id,
-                EmployeeId = employeeId.Value,
+                EmployeeId = employeeId,
                 OldStatus = RequestStatus.New,
                 ChangedAt = DateTime.UtcNow
             };
@@ -115,7 +115,7 @@ namespace Appliction.Services.RequestServices
 
             var requestDto = new GetRequestDto
             {
-                Id = request.Id,
+                Id = id,
                 Title = request.Title,
                 Description = request.Description,
                 EmployeeId = request.EmployeeId,
@@ -162,16 +162,16 @@ namespace Appliction.Services.RequestServices
         public async Task UpdateStatus(Guid id, UpdateStatusDto input)
         {
             var rh = _requestHistoryRepository.GetAll().FirstOrDefault(rh => rh.RequestId == id);
-            var r = _requestRepository.GetAll().FirstOrDefault(rh => rh.Id == id);
-
-            r.Status = input.NewStatus;
-            _requestRepository.Update(r);
-            _requestRepository.SaveChanges();
+            var r = _requestRepository.GetAll().FirstOrDefault(r => r.Id == id);
 
             if (rh.NewStatus == input.NewStatus)
             {
                 throw new Exception("Status is already the same");
             }
+
+            r.Status = input.NewStatus;
+            _requestRepository.Update(r);
+            _requestRepository.SaveChanges();
 
 
             rh.OldStatus = rh.NewStatus ?? RequestStatus.New;
@@ -201,7 +201,7 @@ namespace Appliction.Services.RequestServices
             var requestDetail = _requestDetailRepository.GetAll().FirstOrDefault(rd => rd.RequestId == requestId);
             if (requestDetail == null)
             {
-                throw new Exception("Request Detail not found.");
+                throw new Exception("Request not found.");
             }
             requestDetail.TechnicianNotes = notes;
             _requestDetailRepository.Update(requestDetail);
@@ -262,7 +262,7 @@ namespace Appliction.Services.RequestServices
             var rh = _requestHistoryRepository.GetAll().Include(rh => rh.Employee).FirstOrDefault(rh => rh.RequestId == requestId);
             if (rh == null)
             {
-                throw new Exception("Request History not found.");
+                throw new Exception("Request not found.");
             }
             var rhDto = new GetRequestHistoryDto
             {

@@ -33,11 +33,11 @@ namespace API.Controllers
         }
         [Authorize]
         [HttpPut("Update_User")]
-        public IActionResult UpdateUser(Guid id, [FromBody] UpdateUserDto input)
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto input)
         {
             try
             {
-                _userService.UpdateUser(id, input);
+                await _userService.UpdateUser(id, input);
                 return Ok();
             }
             catch (Exception ex)
@@ -69,11 +69,11 @@ namespace API.Controllers
         }
 
         [HttpDelete("Delete_User")]
-        public IActionResult DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
             {
-                _userService.DeleteUser(id);
+                await _userService.DeleteUser(id);
                 return Ok();
             }
             catch (Exception ex)

@@ -20,7 +20,7 @@ namespace Appliction.Services.UserService
 
         public async Task CreateUser(CreateUserDto input)
         {
-            if ( _userService.GetAll().Any(u => u.Email == input.Email.ToLower().Trim()))
+            if (_userService.GetAll().Any(u => u.Email == input.Email.ToLower().Trim()))
             {
                 throw new Exception("User with this email already exists.");
 
@@ -47,7 +47,7 @@ namespace Appliction.Services.UserService
             await _userService.SaveChangesAsync();
         }
 
-        public void DeleteUser(Guid id)
+        public async Task DeleteUser(Guid id)
         {
             var user = _userService.GetById(id);
             _userService.Delete(user);
@@ -56,7 +56,7 @@ namespace Appliction.Services.UserService
 
         public List<GetUsersDto> GetAllUser()
         {
-           var users = _userService.GetAll().Include(u => u.Role).Select(u => new GetUsersDto()
+            var users = _userService.GetAll().Include(u => u.Role).Select(u => new GetUsersDto()
             {
                 Id = u.Id,
                 Name = u.Name,
@@ -64,16 +64,16 @@ namespace Appliction.Services.UserService
                 PhoneNumber = u.PhoneNumber,
                 Location = u.Location,
                 RoleId = u.RoleId,
-                RoleName= u.Role.Name
+                RoleName = u.Role.Name
 
-           }).ToList();
+            }).ToList();
             return users;
         }
 
         public async Task<GetUsersDto> GetUserById(Guid id)
         {
-            var user = await _userService.GetAll().Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id);   
-            
+            var user = await _userService.GetAll().Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id);
+
             var result = new GetUsersDto()
             {
                 Id = user.Id,
@@ -102,7 +102,7 @@ namespace Appliction.Services.UserService
             return technicians;
         }
 
-        public void UpdateUser(Guid id, UpdateUserDto input)
+        public async Task UpdateUser(Guid id, UpdateUserDto input)
         {
             if (_userService.GetAll().Any(u => u.Email == input.Email.ToLower().Trim() && u.Id != id))
             {

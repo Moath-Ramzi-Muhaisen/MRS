@@ -97,8 +97,9 @@ namespace Appliction.Services.AuthServices
 
         }
 
-        public async Task Logout(Guid UserId)
+        public async Task Logout()
         {
+            var UserId = _currentUserService.UserId;
             var refreshToken = _refershTokenRepository.GetAll().FirstOrDefault(rt => rt.UserId == UserId);
             if (refreshToken != null)
             {

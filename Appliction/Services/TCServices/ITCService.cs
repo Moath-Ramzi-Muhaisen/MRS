@@ -10,7 +10,7 @@ namespace Appliction.Services.TCServices
         Task CreateTC(CreateTCDto input);
         Task<List<GetTCDto>> GetAllTC();
         Task<GetTCDto> GetTCById(Guid id);
-        void UpdateTC(Guid id, UpdateTCDto input);
-        void DeleteTC(Guid id);
+        Task UpdateTC(Guid id, UpdateTCDto input);
+        Task DeleteTC(Guid id);
     }
 }

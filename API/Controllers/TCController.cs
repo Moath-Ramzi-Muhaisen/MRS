@@ -25,9 +25,9 @@ namespace API.Controllers
             return Ok();
         }
         [HttpPut("Update_Technician_Category")]
-        public IActionResult UpdateTC(Guid id, [FromBody] UpdateTCDto input)
+        public async Task<IActionResult> UpdateTC(Guid id, [FromBody] UpdateTCDto input)
         {
-            _tcService.UpdateTC(id, input);
+            await _tcService.UpdateTC(id, input);
             return Ok();
         }
         [HttpGet("Get_All_Technician_Categories")]
@@ -48,9 +48,9 @@ namespace API.Controllers
         }
 
         [HttpDelete("Delete_Technician_Category")]
-        public IActionResult DeleteTC(Guid id)
+        public async Task<IActionResult> DeleteTC(Guid id)
         {
-            _tcService.DeleteTC(id);
+            await _tcService.DeleteTC(id);
             return Ok();
         }
     }

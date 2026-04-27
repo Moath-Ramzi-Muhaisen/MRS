@@ -10,6 +10,6 @@ namespace Appliction.Services.AuthServices
         Task<LoginResponsDto> Login(LoginRequestDto input);
         Task ChangeUserPassword(ChangeUserPasswordDto input);
         Task<string> RefreshToken(RefreshTokenDto input);
-        Task Logout(Guid UserId);
+        Task Logout();
     }
 }

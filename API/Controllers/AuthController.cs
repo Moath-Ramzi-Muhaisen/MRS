@@ -38,9 +38,9 @@ namespace API.Controllers
         }
 
         [HttpDelete("Logout")]
-        public async Task<IActionResult> Logout(Guid id)
+        public async Task<IActionResult> Logout()
         {
-            await _authService.Logout(id);
+            await _authService.Logout();
             return Ok();
         }
     }
