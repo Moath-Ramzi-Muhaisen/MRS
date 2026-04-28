@@ -8,7 +8,7 @@ namespace Domain.Entites
     public class TechnicianCategory
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
         public Guid TechnicianId { get; set; }

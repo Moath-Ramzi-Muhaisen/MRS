@@ -4,7 +4,9 @@ using Appliction.Repositories;
 using Appliction.Services.RequestServices.DTOs;
 using Domain.Entites;
 using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Appliction.Services.RequestServices
 {
@@ -14,12 +16,16 @@ namespace Appliction.Services.RequestServices
         private readonly IGenericRepository<RequestDetail> _requestDetailRepository;
         private readonly IGenericRepository<RequestHistory> _requestHistoryRepository;
         private readonly ICurrentUserService _currentUserService;
-        public RequestService(IGenericRepository<Request> requestRepository, IGenericRepository<RequestDetail> requestDetailRepository, IGenericRepository<RequestHistory> requestHistoryRepository, ICurrentUserService currentUserService)
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public RequestService(IHttpContextAccessor httpContextAccessor, IGenericRepository<Request> requestRepository, IGenericRepository<RequestDetail> requestDetailRepository, IGenericRepository<RequestHistory> requestHistoryRepository, ICurrentUserService currentUserService, IConfiguration configuration)
         {
             _requestRepository = requestRepository;
             _requestDetailRepository = requestDetailRepository;
             _requestHistoryRepository = requestHistoryRepository;
             _currentUserService = currentUserService;
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -39,11 +45,18 @@ namespace Appliction.Services.RequestServices
             await _requestRepository.InsertAsync(request);
             await _requestRepository.SaveChangesAsync();
 
+            string? imageUrl = null;
+            if (input.RequestDetail.Image != null)
+            {
+                imageUrl = await UploadImage(input.RequestDetail.Image);
+            }
+
             var requestDetail = new RequestDetail
             {
                 RequestId = request.Id,
                 Location = input.RequestDetail.Location,
                 EmployeeNotes = input.RequestDetail.EmployeeNotes,
+                ImageUrl = imageUrl
             };
 
             await _requestDetailRepository.InsertAsync(requestDetail);
@@ -66,6 +79,8 @@ namespace Appliction.Services.RequestServices
             var request = _requestRepository.GetById(id);
             var requestDetail = _requestDetailRepository.GetAll().FirstOrDefault(rd => rd.RequestId == id);
             var requestHistory = _requestHistoryRepository.GetAll().FirstOrDefault(rh => rh.RequestId == id);
+
+            DeleteImage(requestDetail?.ImageUrl);
 
             _requestHistoryRepository.Delete(requestHistory);
             _requestDetailRepository.Delete(requestDetail);
@@ -98,7 +113,9 @@ namespace Appliction.Services.RequestServices
                     {
                         Location = r.RequestDetail.Location,
                         EmployeeNotes = r.RequestDetail.EmployeeNotes,
-                        TechnicianNotes = r.RequestDetail.TechnicianNotes
+                        TechnicianNotes = r.RequestDetail.TechnicianNotes,
+                        ImageUrl = r.RequestDetail.ImageUrl
+
                     }
 
                 }).ToList();
@@ -130,7 +147,9 @@ namespace Appliction.Services.RequestServices
                 {
                     Location = request.RequestDetail.Location,
                     EmployeeNotes = request.RequestDetail.EmployeeNotes,
-                    TechnicianNotes = request.RequestDetail.TechnicianNotes
+                    TechnicianNotes = request.RequestDetail.TechnicianNotes,
+                    ImageUrl = request.RequestDetail.ImageUrl
+
                 }
 
             };
@@ -153,12 +172,33 @@ namespace Appliction.Services.RequestServices
             requestDetail.EmployeeNotes = input.RequestDetail.EmployeeNotes;
 
 
+            if (input.RequestDetail.Image != null)
+            {
+                DeleteImage(requestDetail.ImageUrl);
+                requestDetail.ImageUrl = await UploadImage(input.RequestDetail.Image);
+            }
+
+
             _requestRepository.Update(request);
             _requestDetailRepository.Update(requestDetail);
 
             _requestRepository.SaveChanges();
             _requestDetailRepository.SaveChanges();
         }
+        public async Task UpdateImage(Guid requestId, IFormFile image)
+        {
+            var requestDetail = _requestDetailRepository.GetAll().FirstOrDefault(rd => rd.RequestId == requestId);
+            if (requestDetail == null)
+            {
+                throw new Exception("Request not found.");
+            }
+            DeleteImage(requestDetail.ImageUrl);
+            requestDetail.ImageUrl = await UploadImage(image);
+
+            _requestDetailRepository.Update(requestDetail);
+            _requestDetailRepository.SaveChanges();
+        }
+
         public async Task UpdateStatus(Guid id, UpdateStatusDto input)
         {
             var rh = _requestHistoryRepository.GetAll().FirstOrDefault(rh => rh.RequestId == id);
@@ -235,7 +275,9 @@ namespace Appliction.Services.RequestServices
                 {
                     Location = r.RequestDetail.Location,
                     EmployeeNotes = r.RequestDetail.EmployeeNotes,
-                    TechnicianNotes = r.RequestDetail.TechnicianNotes
+                    TechnicianNotes = r.RequestDetail.TechnicianNotes,
+                    ImageUrl = r.RequestDetail.ImageUrl
+
                 }
             }).ToList();
 
@@ -277,6 +319,46 @@ namespace Appliction.Services.RequestServices
             };
             return rhDto;
         }
+        private async Task<string> UploadImage(IFormFile file)
+        {
+            var baseUplodedPath = _configuration["FileStorage:UploadPath"];
+            var uploadsfolder = Path.Combine(baseUplodedPath, "Requests");
 
+            if (!Directory.Exists(uploadsfolder))
+            {
+                Directory.CreateDirectory(uploadsfolder);
+            }
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsfolder, fileName);
+            using (var filestream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(filestream);
+            }
+
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+
+            return $"{baseUrl}/External/Requests/{fileName}";
+        }
+        private void DeleteImage(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl)) return;
+
+            try
+            {
+                var fileName = Path.GetFileName(imageUrl);
+                var baseUplodedPath = _configuration["FileStorage:UploadPath"];
+                var filePath = Path.Combine(baseUplodedPath, "Requests", fileName);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Console.WriteLine($"Error deleting image: {ex.Message}");
+            }
+        }
     }
 }

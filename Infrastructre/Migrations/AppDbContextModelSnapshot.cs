@@ -24,11 +24,9 @@ namespace Infrastructre.Migrations
 
             modelBuilder.Entity("Domain.Entites.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -47,42 +45,42 @@ namespace Infrastructre.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d181"),
                             Description = "Issues related to electrical systems such as power outages, faulty wiring, lighting problems, or circuit breaker failures.",
                             Name = "Electrical",
                             Type = 1
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d182"),
                             Description = "Problems involving heating, cooling, or ventilation systems, including air conditioner failures, poor airflow, or temperature control issues.",
                             Name = "HVAC",
                             Type = 2
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d183"),
                             Description = "Issues related to water systems such as leaks, clogged drains, broken pipes, or malfunctioning faucets and fixtures.",
                             Name = "Plumbing",
                             Type = 3
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d184"),
                             Description = "Problems related to network connectivity, including internet outages, slow network performance, or issues with network hardware.",
                             Name = "Network",
                             Type = 4
                         },
                         new
                         {
-                            Id = 5,
+                            Id = new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d185"),
                             Description = "Issues related to IT systems, software, or hardware, including computer malfunctions, software errors, or cybersecurity concerns.",
                             Name = "InformationTechnology",
                             Type = 5
                         },
                         new
                         {
-                            Id = 6,
+                            Id = new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d186"),
                             Description = "Miscellaneous issues that do not fall into the other predefined categories.",
                             Name = "Other",
                             Type = 6
@@ -95,8 +93,8 @@ namespace Infrastructre.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -217,8 +215,8 @@ namespace Infrastructre.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TechnicianId")
                         .HasColumnType("uniqueidentifier");

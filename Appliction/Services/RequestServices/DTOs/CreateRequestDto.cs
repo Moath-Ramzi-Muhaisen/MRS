@@ -1,5 +1,6 @@
 ﻿using Domain.Entites;
 using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Appliction.Services.RequestServices.DTOs
@@ -8,7 +9,7 @@ namespace Appliction.Services.RequestServices.DTOs
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
 
         public CreateRequestDetailDto RequestDetail { get; set; }
@@ -18,6 +19,7 @@ namespace Appliction.Services.RequestServices.DTOs
     {
         public string Location { get; set; }
         public string EmployeeNotes { get; set; }
+        public IFormFile? Image { get; set; }
 
 
     }

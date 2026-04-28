@@ -12,6 +12,7 @@ using Infrastructre.Repositories;
 using Infrastructre.Services.CurrentUserService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -99,6 +100,22 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
+var uploadPath = builder.Configuration["FileStorage:UploadPath"];
+if (!string.IsNullOrEmpty(uploadPath))
+{
+    if (!Directory.Exists(uploadPath))
+    {
+        Directory.CreateDirectory(uploadPath);
+    }
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uploadPath),
+        RequestPath = "/External"
+    });
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

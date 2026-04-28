@@ -15,7 +15,7 @@ namespace Appliction.Services.RequestServices.DTOs
         public Guid? TechnicianId { get; set; }
 
         public string? TechnicianName { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         public string CategoryName { get; set; }
 
@@ -30,5 +30,6 @@ namespace Appliction.Services.RequestServices.DTOs
         public string Location { get; set; }
         public string EmployeeNotes { get; set; }
         public string? TechnicianNotes { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Appliction.Services.RequestServices.DTOs;
+using Microsoft.AspNetCore.Http;
 using System.Data;
 
 namespace Appliction.Services.RequestServices
@@ -16,5 +17,6 @@ namespace Appliction.Services.RequestServices
         Task<List<GetRequestDto>> GetRequestsCurrantTechnicianOrEmployee();
         Task<List<GetRequestHistoryDto>> GetAllRequestHistory();
         Task<GetRequestHistoryDto> GetRequestHistoryById(Guid requestId);
+        Task UpdateImage(Guid requestId, IFormFile image);
     }
 }

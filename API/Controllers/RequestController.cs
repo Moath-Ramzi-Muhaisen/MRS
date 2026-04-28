@@ -19,15 +19,17 @@ namespace API.Controllers
             _requestService = requestService;
         }
         [Authorize(Roles = nameof(SystemRole.Employee))]
+        [Consumes("multipart/form-data")]
         [HttpPost("Create_Request")]
-        public async Task<IActionResult> CreateRequest([FromBody] CreateRequestDto input)
+        public async Task<IActionResult> CreateRequest([FromForm] CreateRequestDto input)
         {
             await _requestService.CreateRequest(input);
             return Ok();
         }
         [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Admin))]
+        [Consumes("multipart/form-data")]
         [HttpPut("Update_Request")]
-        public async Task<IActionResult> UpdateRequest(Guid id, [FromBody] CreateRequestDto input)
+        public async Task<IActionResult> UpdateRequest(Guid id, [FromForm] CreateRequestDto input)
         {
             await _requestService.UpdateRequest(id, input);
             return Ok();
@@ -37,6 +39,14 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateStatusDto input)
         {
             await _requestService.UpdateStatus(id, input);
+            return Ok();
+        }
+        [HttpPut("Update_Image")]
+        [Consumes("multipart/form-data")]
+        [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Admin))]
+        public async Task<IActionResult> UpdateImage(Guid id, IFormFile image)
+        {
+            await _requestService.UpdateImage(id, image);
             return Ok();
         }
         [Authorize(Roles = nameof(SystemRole.Admin))]

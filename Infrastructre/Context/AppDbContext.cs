@@ -9,7 +9,14 @@ namespace Infrastructre.Context
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Token> Tokens { get; set; }
+        public DbSet<TechnicianCategory> TechnicianCategories { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<RequestDetail> RequestDetails { get; set; }
+        public DbSet<RequestHistory> RequestHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,20 +29,9 @@ namespace Infrastructre.Context
             }
 
 
-            CategorySeed.Seed(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
         }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<Token> Tokens { get; set; }
-        public DbSet<TechnicianCategory> TechnicianCategories { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Request> Requests { get; set; }
-        public DbSet<RequestDetail> RequestDetails { get; set; }
-        public DbSet<RequestHistory> RequestHistories { get; set; }
-
-
     }
 }

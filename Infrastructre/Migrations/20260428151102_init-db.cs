@@ -17,8 +17,7 @@ namespace Infrastructre.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false)
@@ -73,7 +72,7 @@ namespace Infrastructre.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -105,7 +104,7 @@ namespace Infrastructre.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -201,12 +200,12 @@ namespace Infrastructre.Migrations
                 columns: new[] { "Id", "Description", "Name", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Issues related to electrical systems such as power outages, faulty wiring, lighting problems, or circuit breaker failures.", "Electrical", 1 },
-                    { 2, "Problems involving heating, cooling, or ventilation systems, including air conditioner failures, poor airflow, or temperature control issues.", "HVAC", 2 },
-                    { 3, "Issues related to water systems such as leaks, clogged drains, broken pipes, or malfunctioning faucets and fixtures.", "Plumbing", 3 },
-                    { 4, "Problems related to network connectivity, including internet outages, slow network performance, or issues with network hardware.", "Network", 4 },
-                    { 5, "Issues related to IT systems, software, or hardware, including computer malfunctions, software errors, or cybersecurity concerns.", "InformationTechnology", 5 },
-                    { 6, "Miscellaneous issues that do not fall into the other predefined categories.", "Other", 6 }
+                    { new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d181"), "Issues related to electrical systems such as power outages, faulty wiring, lighting problems, or circuit breaker failures.", "Electrical", 1 },
+                    { new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d182"), "Problems involving heating, cooling, or ventilation systems, including air conditioner failures, poor airflow, or temperature control issues.", "HVAC", 2 },
+                    { new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d183"), "Issues related to water systems such as leaks, clogged drains, broken pipes, or malfunctioning faucets and fixtures.", "Plumbing", 3 },
+                    { new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d184"), "Problems related to network connectivity, including internet outages, slow network performance, or issues with network hardware.", "Network", 4 },
+                    { new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d185"), "Issues related to IT systems, software, or hardware, including computer malfunctions, software errors, or cybersecurity concerns.", "InformationTechnology", 5 },
+                    { new Guid("8c7aa2ae-fe53-4d77-b357-ee831ad8d186"), "Miscellaneous issues that do not fall into the other predefined categories.", "Other", 6 }
                 });
 
             migrationBuilder.CreateIndex(
