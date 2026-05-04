@@ -46,9 +46,9 @@ namespace API.Controllers
             }
         }
         [HttpGet("Get_All_Users")]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
-            var users = _userService.GetAllUser();
+            var users = await _userService.GetAllUser();
             return Ok(users);
         }
         [HttpGet("Get_User_By_Id")]
@@ -62,9 +62,9 @@ namespace API.Controllers
             return Ok(user);
         }
         [HttpGet("Get_Users_Technicians")]
-        public async Task<IActionResult> GetUsersTechnicians()
+        public async Task<IActionResult> GetUsersTechnicians(Guid? categoryId)
         {
-            var technicians = await _userService.GetUsersTechnicians();
+            var technicians = await _userService.GetUsersTechnicians(categoryId);
             return Ok(technicians);
         }
 

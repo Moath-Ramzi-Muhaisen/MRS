@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Domain.Entites
 {
-    
+
     public class User
     {
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -20,6 +20,8 @@ namespace Domain.Entites
         [ForeignKey("RoleId")]
         public Role Role { get; set; }
         public string? Location { get; set; }
+        public bool IsActived { get; set; } = true;
+
 
     }
 }

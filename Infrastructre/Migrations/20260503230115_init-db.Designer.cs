@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructre.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260428151102_init-db")]
+    [Migration("20260503230115_init-db")]
     partial class initdb
     {
         /// <inheritdoc />
@@ -265,6 +265,9 @@ namespace Infrastructre.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActived")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");

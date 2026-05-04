@@ -50,7 +50,8 @@ namespace Infrastructre.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActived = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
