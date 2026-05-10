@@ -18,5 +18,7 @@ namespace Appliction.Services.RequestServices
         Task<List<GetRequestHistoryDto>> GetAllRequestHistory();
         Task<GetRequestHistoryDto> GetRequestHistoryById(Guid requestId);
         Task UpdateImage(Guid requestId, IFormFile image);
+        Task<DashboardStatsDto> GetDashboardStats();
+        Task<DashboardStatsDto> GetDashboardStatsByUserId();
     }
 }

@@ -253,7 +253,8 @@ namespace Appliction.Services.RequestServices
             var requests = _requestRepository.GetAll().
                 Include(r => r.Employee).Include(r => r.Technician)
                 .Include(r => r.Category)
-                .Where(r => r.TechnicianId == _currentUserService.UserId || r.EmployeeId == _currentUserService.UserId);
+                .Where(r => r.TechnicianId == _currentUserService.UserId || r.EmployeeId == _currentUserService.UserId)
+                .OrderByDescending(r => r.CreatedAt);
 
 
 
@@ -266,7 +267,7 @@ namespace Appliction.Services.RequestServices
                 EmployeeId = r.EmployeeId,
                 EmployeeName = r.Employee.Name,
                 TechnicianId = r.TechnicianId,
-                TechnicianName = r.Technician.Name,
+                TechnicianName = r.Technician.Name ?? "Unknown",
                 CategoryId = r.CategoryId,
                 CategoryName = r.Category.Name,
                 CreatedAt = DateHelper.Format(r.CreatedAt),
@@ -359,6 +360,63 @@ namespace Appliction.Services.RequestServices
                 // Log the exception or handle it as needed
                 Console.WriteLine($"Error deleting image: {ex.Message}");
             }
+        }
+        public async Task<DashboardStatsDto> GetDashboardStats()
+        {
+            var requests = _requestRepository.GetAll();
+
+            var stats = new DashboardStatsDto
+            {
+                TotalRequests = requests.Count(),
+
+                NewRequests = requests.Count(r =>
+                    r.Status == RequestStatus.New),
+
+                InProgressRequests = requests.Count(r =>
+                    r.Status == RequestStatus.InProgress),
+
+                ResolvedRequests = requests.Count(r =>
+                    r.Status == RequestStatus.Resolved),
+
+                AssignedRequests = requests.Count(r =>
+                    r.Status == RequestStatus.Assigned),
+
+                DoneRequests = requests.Count(r =>
+                    r.Status == RequestStatus.Done)
+            };
+
+            return stats;
+        }
+        public async Task<DashboardStatsDto> GetDashboardStatsByUserId()
+        {
+            var userId = _currentUserService.UserId.Value;
+
+            var requests = _requestRepository.GetAll()
+                .Where(r =>
+                    r.EmployeeId == userId ||
+                    r.TechnicianId == userId);
+
+            var stats = new DashboardStatsDto
+            {
+                TotalRequests = requests.Count(),
+
+                NewRequests = requests.Count(r =>
+                    r.Status == RequestStatus.New),
+
+                InProgressRequests = requests.Count(r =>
+                    r.Status == RequestStatus.InProgress),
+
+                ResolvedRequests = requests.Count(r =>
+                    r.Status == RequestStatus.Resolved),
+
+                AssignedRequests = requests.Count(r =>
+                    r.Status == RequestStatus.Assigned),
+
+                DoneRequests = requests.Count(r =>
+                r.Status == RequestStatus.Done)
+            };
+
+            return stats;
         }
     }
 }

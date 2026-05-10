@@ -118,5 +118,23 @@ namespace API.Controllers
             await _requestService.DeleteRequest(id);
             return Ok();
         }
+        [Authorize(Roles = nameof(SystemRole.Admin) + "," + nameof(SystemRole.Employee) + "," + nameof(SystemRole.Technician))]
+        [HttpGet("dashboard-stats")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            var result = await _requestService.GetDashboardStats();
+
+            return Ok(result);
+        }
+        [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Technician))]
+
+        [HttpGet("dashboard-stats-by-user")]
+        public async Task<IActionResult> GetDashboardStatsByUserId()
+        {
+            var result = await _requestService
+                .GetDashboardStatsByUserId();
+
+            return Ok(result);
+        }
     }
 }

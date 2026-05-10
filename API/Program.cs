@@ -80,6 +80,17 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(securityReq);
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyHeader()
+            .AllowAnyOrigin()
+            .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IRoleService), typeof(RoleService));
@@ -94,6 +105,8 @@ var app = builder.Build();
 
 
 UserSeedData.UserSeed(app.Services);
+
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

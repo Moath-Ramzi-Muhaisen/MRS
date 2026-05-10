@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize(Roles = nameof(SystemRole.Admin))]
+    [Authorize(Roles = nameof(SystemRole.Admin) + "," + nameof(SystemRole.Employee))]
     [Route("api/[controller]")]
     [ApiController]
     public class CatagoryController : ControllerBase
