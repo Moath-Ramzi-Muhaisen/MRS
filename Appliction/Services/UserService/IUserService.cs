@@ -13,6 +13,7 @@ namespace Appliction.Services.UserService
         Task UpdateUser(Guid id, UpdateUserDto input);
         Task DeleteUser(Guid id);
         Task<List<GetUsersDto>> GetUsersTechnicians(Guid? categoryId = null);
+        Task<List<GetUsersDto>> GetUsersEmployee();
 
     }
 }

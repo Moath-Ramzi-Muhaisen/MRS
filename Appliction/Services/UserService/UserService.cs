@@ -171,6 +171,24 @@ namespace Appliction.Services.UserService
             }
             return techniciansDto;
         }
+        public async Task<List<GetUsersDto>> GetUsersEmployee()
+        {
+            var Employee = _userService.GetAll()
+                .Include(u => u.Role)
+                .Where(u => u.IsActived)
+                .Where(u => u.Role.Name == SystemRole.Employee.ToString());
+
+
+            var tc = await Employee.ToListAsync();
+            var EmployeeDto = new List<GetUsersDto>();
+
+            foreach (var tech in tc)
+            {
+                var dto = MapToDto(tech);
+                EmployeeDto.Add(dto);
+            }
+            return EmployeeDto;
+        }
 
         public async Task UpdateUser(Guid id, UpdateUserDto input)
         {

@@ -71,7 +71,7 @@ namespace API.Controllers
             var requests = await _requestService.GetAllRequest();
             return Ok(requests);
         }
-        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Admin) + "," + nameof(SystemRole.Admin))]
         [HttpGet("Get_Request_By_Id")]
         public async Task<IActionResult> GetRequestById(Guid id)
         {
@@ -89,7 +89,7 @@ namespace API.Controllers
             var requestHistory = await _requestService.GetAllRequestHistory();
             return Ok(requestHistory);
         }
-        [Authorize(Roles = nameof(SystemRole.Admin))]
+        [Authorize(Roles = nameof(SystemRole.Admin) + "," + nameof(SystemRole.Employee))]
         [HttpGet("Get_Request_History_By_Id")]
         public async Task<IActionResult> GetRequestHistoryById(Guid requestId)
         {

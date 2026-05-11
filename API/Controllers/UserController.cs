@@ -67,6 +67,12 @@ namespace API.Controllers
             var technicians = await _userService.GetUsersTechnicians(categoryId);
             return Ok(technicians);
         }
+        [HttpGet("Get_Users_Employees")]
+        public async Task<IActionResult> GetUsersEmployees()
+        {
+            var employees = await _userService.GetUsersEmployee();
+            return Ok(employees);
+        }
 
         [HttpDelete("Delete_User")]
         public async Task<IActionResult> DeleteUser(Guid id)

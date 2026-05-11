@@ -96,6 +96,7 @@ namespace Appliction.Services.RequestServices
             var requests = _requestRepository.GetAll().
                 Include(r => r.Employee).Include(r => r.Technician)
                 .Include(r => r.Category)
+                .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new GetRequestDto
                 {
                     Id = r.Id,
@@ -104,7 +105,7 @@ namespace Appliction.Services.RequestServices
                     EmployeeId = r.EmployeeId,
                     EmployeeName = r.Employee.Name,
                     TechnicianId = r.TechnicianId,
-                    TechnicianName = r.Technician.Name,
+                    TechnicianName = r.Technician.Name ?? "Unknown",
                     CategoryId = r.CategoryId,
                     CategoryName = r.Category.Name,
                     CreatedAt = DateHelper.Format(r.CreatedAt),
@@ -123,36 +124,49 @@ namespace Appliction.Services.RequestServices
             return requests;
         }
 
-        public async Task<GetRequestDto> GetRequestById(Guid id)
+        public async Task<GetRequestDto?> GetRequestById(Guid id)
         {
-            var request = _requestRepository.GetAll().
-                Include(r => r.Employee).Include(r => r.Technician)
+            var request = await _requestRepository.GetAll()
+                .Include(r => r.Employee)
+                .Include(r => r.Technician)
                 .Include(r => r.Category)
-                .FirstOrDefault(r => r.Id == id);
+                .Include(r => r.RequestDetail)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (request == null)
+                return null;
+
+            var detail = request.RequestDetail;
 
             var requestDto = new GetRequestDto
             {
-                Id = id,
+                Id = request.Id,
                 Title = request.Title,
                 Description = request.Description,
+
                 EmployeeId = request.EmployeeId,
-                EmployeeName = request.Employee.Name,
+                EmployeeName = request.Employee?.Name ?? "Unknown Employee",
+
                 TechnicianId = request.TechnicianId,
-                TechnicianName = request.Technician.Name,
+                TechnicianName = request.Technician?.Name ?? "Unknown",
+
                 CategoryId = request.CategoryId,
-                CategoryName = request.Category.Name,
+                CategoryName = request.Category?.Name ?? "Unknown Category",
+
                 CreatedAt = DateHelper.Format(request.CreatedAt),
+
                 Status = request.Status,
+
                 RequestDetail = new GetRequestDetailDto
                 {
-                    Location = request.RequestDetail.Location,
-                    EmployeeNotes = request.RequestDetail.EmployeeNotes,
-                    TechnicianNotes = request.RequestDetail.TechnicianNotes,
-                    ImageUrl = request.RequestDetail.ImageUrl
+                    Location = detail.Location,
+                    EmployeeNotes = detail.EmployeeNotes,
 
+                    TechnicianNotes = detail.TechnicianNotes ?? "No Notes",
+                    ImageUrl = detail.ImageUrl ?? ""
                 }
-
             };
+
             return requestDto;
         }
 
