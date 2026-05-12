@@ -30,14 +30,14 @@ namespace API.Controllers
 
             return Ok(result);
         }
-        [HttpPut("Change_User_Password")]
+        [HttpPost("Change_User_Password")]
         public async Task<IActionResult> ChangeUserPassword([FromBody] ChangeUserPasswordDto input)
         {
             await _authService.ChangeUserPassword(input);
             return Ok();
         }
 
-        [HttpDelete("Logout")]
+        [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
             await _authService.Logout();

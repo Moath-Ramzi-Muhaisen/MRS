@@ -81,5 +81,35 @@ namespace Appliction.Services.TCServices
             _tcrepository.Update(tc);
             _tcrepository.SaveChanges();
         }
+        public async Task UpdateTCByTechnicianId(Guid TechnicianId, List<Guid> CategoryIds)
+        {
+            // احذف كل الـ categories الحالية للـ Technician
+            var existingTCs = _tcrepository.GetAll()
+                .Where(tc => tc.TechnicianId == TechnicianId)
+                .ToList();
+
+            if (!existingTCs.Any())
+            {
+                throw new Exception("Technician Category not found.");
+            }
+
+            foreach (var tc in existingTCs)
+            {
+                _tcrepository.Delete(tc);
+            }
+
+            // أضف الـ categories الجديدة
+            foreach (var categoryId in CategoryIds)
+            {
+                var newTC = new TechnicianCategory
+                {
+                    TechnicianId = TechnicianId,
+                    CategoryId = categoryId
+                };
+                await _tcrepository.InsertAsync(newTC);
+            }
+
+            _tcrepository.SaveChanges();
+        }
     }
 }

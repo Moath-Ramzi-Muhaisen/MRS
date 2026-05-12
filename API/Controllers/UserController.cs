@@ -32,7 +32,7 @@ namespace API.Controllers
             }
         }
         [Authorize]
-        [HttpPut("Update_User")]
+        [HttpPost("Update_User")]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto input)
         {
             try
@@ -74,7 +74,7 @@ namespace API.Controllers
             return Ok(employees);
         }
 
-        [HttpDelete("Delete_User")]
+        [HttpPost("Delete_User")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try

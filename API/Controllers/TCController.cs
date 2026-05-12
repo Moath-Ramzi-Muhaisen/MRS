@@ -24,10 +24,16 @@ namespace API.Controllers
             await _tcService.CreateTC(input);
             return Ok();
         }
-        [HttpPut("Update_Technician_Category")]
+        [HttpPost("Update_Technician_Category")]
         public async Task<IActionResult> UpdateTC(Guid id, [FromBody] UpdateTCDto input)
         {
             await _tcService.UpdateTC(id, input);
+            return Ok();
+        }
+        [HttpPost("UpdateTCByTechnicianId")]
+        public async Task<IActionResult> UpdateTCByTechnicianId(Guid TechnicianId, [FromBody] List<Guid> CategoryIds)
+        {
+            await _tcService.UpdateTCByTechnicianId(TechnicianId, CategoryIds);
             return Ok();
         }
         [HttpGet("Get_All_Technician_Categories")]
@@ -47,7 +53,7 @@ namespace API.Controllers
             return Ok(tc);
         }
 
-        [HttpDelete("Delete_Technician_Category")]
+        [HttpPost("Delete_Technician_Category")]
         public async Task<IActionResult> DeleteTC(Guid id)
         {
             await _tcService.DeleteTC(id);

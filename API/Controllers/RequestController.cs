@@ -28,20 +28,20 @@ namespace API.Controllers
         }
         [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Admin))]
         [Consumes("multipart/form-data")]
-        [HttpPut("Update_Request")]
+        [HttpPost("Update_Request")]
         public async Task<IActionResult> UpdateRequest(Guid id, [FromForm] CreateRequestDto input)
         {
             await _requestService.UpdateRequest(id, input);
             return Ok();
         }
         [Authorize(Roles = nameof(SystemRole.Technician) + "," + nameof(SystemRole.Admin))]
-        [HttpPut("Update_Status")]
+        [HttpPost("Update_Status")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateStatusDto input)
         {
             await _requestService.UpdateStatus(id, input);
             return Ok();
         }
-        [HttpPut("Update_Image")]
+        [HttpPost("Update_Image")]
         [Consumes("multipart/form-data")]
         [Authorize(Roles = nameof(SystemRole.Employee) + "," + nameof(SystemRole.Admin))]
         public async Task<IActionResult> UpdateImage(Guid id, IFormFile image)
@@ -50,7 +50,7 @@ namespace API.Controllers
             return Ok();
         }
         [Authorize(Roles = nameof(SystemRole.Admin))]
-        [HttpPut("Assign_Technician")]
+        [HttpPost("Assign_Technician")]
         public async Task<IActionResult> AssignTechnician(Guid requestId, Guid technicianId)
         {
 
@@ -58,7 +58,7 @@ namespace API.Controllers
             return Ok();
         }
         [Authorize(Roles = nameof(SystemRole.Technician))]
-        [HttpPut("Add_Technician_Notes")]
+        [HttpPost("Add_Technician_Notes")]
         public async Task<IActionResult> AddTechnicianNotes(Guid requestId, string notes)
         {
             await _requestService.AddTechnicianNotes(requestId, notes);
@@ -112,7 +112,7 @@ namespace API.Controllers
             return Ok(requests);
         }
         [Authorize(Roles = nameof(SystemRole.Admin) + "," + nameof(SystemRole.Employee))]
-        [HttpDelete("Delete_Request")]
+        [HttpPost("Delete_Request")]
         public async Task<IActionResult> DeleteRequest(Guid id)
         {
             await _requestService.DeleteRequest(id);

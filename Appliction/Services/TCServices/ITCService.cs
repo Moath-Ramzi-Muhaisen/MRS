@@ -12,5 +12,6 @@ namespace Appliction.Services.TCServices
         Task<GetTCDto> GetTCById(Guid id);
         Task UpdateTC(Guid id, UpdateTCDto input);
         Task DeleteTC(Guid id);
+        Task UpdateTCByTechnicianId(Guid TechnicianId, List<Guid> CategoryIds);
     }
 }
