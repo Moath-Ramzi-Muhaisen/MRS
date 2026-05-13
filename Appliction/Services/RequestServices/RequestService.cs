@@ -245,7 +245,11 @@ namespace Appliction.Services.RequestServices
                 throw new Exception("Request not found.");
             }
             request.TechnicianId = technicianId;
-            request.Status = RequestStatus.Assigned;
+            if (request.Status == RequestStatus.New)
+            {
+                request.Status = RequestStatus.Assigned;
+            }
+
             _requestRepository.Update(request);
             _requestRepository.SaveChanges();
 
