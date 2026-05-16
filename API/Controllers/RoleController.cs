@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize(Roles = nameof(SystemRole.Admin))]
+    [AllowAnonymous]
+
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
